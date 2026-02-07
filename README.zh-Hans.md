@@ -1,11 +1,11 @@
 <div align="center">
   <h1>Sun Path Atlas</h1>
-  <p>English | <a href="README.zh-Hans.md">简体中文</a></p>
+  <p><a href="README.md">English</a> | 简体中文</p>
 </div>
 
 > [!Warning]
 >
-> Except for the README, this project was independently completed by GPT-5.3-Codex Extra High.
+> 本项目除 README 外，均由 GPT-5.3-Codex Extra High 独立完成。
 
 ## Getting Started
 
