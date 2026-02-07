@@ -22,6 +22,15 @@ const DEFAULT_STYLE = `
 .current-point { fill: #ef6b3a; stroke: #fff; stroke-width: 2; }
 `
 
+function getCanvasSize(canvas: HTMLCanvasElement) {
+  const width = canvas.width || Math.round(canvas.clientWidth || 1)
+  const height = canvas.height || Math.round(canvas.clientHeight || 1)
+  return {
+    width: Math.max(1, width),
+    height: Math.max(1, height),
+  }
+}
+
 function serializeSvg(svg: SVGSVGElement, background?: string): string {
   const clone = svg.cloneNode(true) as SVGSVGElement
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
@@ -107,15 +116,69 @@ async function exportPng(svg: SVGSVGElement, filename: string, scale = 2, backgr
   }, 'image/png')
 }
 
+function buildCanvasImageData(canvas: HTMLCanvasElement, background?: string) {
+  const { width, height } = getCanvasSize(canvas)
+  if (!background) {
+    return canvas.toDataURL('image/png')
+  }
+
+  const merged = document.createElement('canvas')
+  merged.width = width
+  merged.height = height
+  const ctx = merged.getContext('2d')
+  if (!ctx) return canvas.toDataURL('image/png')
+  ctx.fillStyle = background
+  ctx.fillRect(0, 0, width, height)
+  ctx.drawImage(canvas, 0, 0, width, height)
+  return merged.toDataURL('image/png')
+}
+
+async function exportCanvasPng(canvas: HTMLCanvasElement, filename: string, scale = 2, background = '#ffffff') {
+  const { width, height } = getCanvasSize(canvas)
+  const out = document.createElement('canvas')
+  out.width = Math.max(1, Math.round(width * scale))
+  out.height = Math.max(1, Math.round(height * scale))
+  const ctx = out.getContext('2d')
+  if (!ctx) return
+  ctx.fillStyle = background
+  ctx.fillRect(0, 0, out.width, out.height)
+  ctx.setTransform(scale, 0, 0, scale, 0, 0)
+  ctx.drawImage(canvas, 0, 0, width, height)
+
+  out.toBlob((blob) => {
+    if (blob) downloadBlob(blob, filename)
+  }, 'image/png')
+}
+
+async function exportCanvasSvg(canvas: HTMLCanvasElement, filename: string, background = '#ffffff') {
+  const { width, height } = getCanvasSize(canvas)
+  const imageDataUrl = buildCanvasImageData(canvas, background)
+  const escapedBackground = background.replaceAll('"', '&quot;')
+  const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="${escapedBackground}" /><image href="${imageDataUrl}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet" /></svg>`
+  const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+  downloadBlob(blob, filename)
+}
+
 export async function exportSunPath(options: ExportOptions): Promise<void> {
-  const svg = document.getElementById(options.svgId) as SVGSVGElement | null
-  if (!svg) return
+  const source = document.getElementById(options.svgId)
+  if (!source) return
   const filenameBase = options.filenameBase ?? 'sun-path'
 
-  if (options.target === 'svg') {
-    await exportSvg(svg, `${filenameBase}.svg`)
+  if (source instanceof HTMLCanvasElement) {
+    if (options.target === 'svg') {
+      await exportCanvasSvg(source, `${filenameBase}.svg`, options.background ?? '#ffffff')
+      return
+    }
+    await exportCanvasPng(source, `${filenameBase}.png`, options.scale ?? 2, options.background ?? '#ffffff')
     return
   }
 
-  await exportPng(svg, `${filenameBase}.png`, options.scale ?? 2, options.background)
+  if (!(source instanceof SVGSVGElement)) return
+
+  if (options.target === 'svg') {
+    await exportSvg(source, `${filenameBase}.svg`)
+    return
+  }
+
+  await exportPng(source, `${filenameBase}.png`, options.scale ?? 2, options.background)
 }
