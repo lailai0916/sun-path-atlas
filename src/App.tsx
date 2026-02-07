@@ -105,8 +105,8 @@ type AppContentProps = {
 
 function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps) {
   const { t } = useI18n()
-  const [latitude, setLatitude] = useState('39.9042')
-  const [longitude, setLongitude] = useState('116.4074')
+  const [latitude, setLatitude] = useState('30')
+  const [longitude, setLongitude] = useState('120')
   const [date, setDate] = useState('2026-02-04')
   const [tzOffset, setTzOffset] = useState('UTC+08:00')
   const [dstEnabled, setDstEnabled] = useState(false)
