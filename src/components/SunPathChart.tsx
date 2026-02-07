@@ -29,6 +29,7 @@ type SceneRefs = {
   sunGlow: THREE.Mesh
   sunLight: THREE.DirectionalLight
   abovePathLine: THREE.LineSegments
+  abovePathHaloLine: THREE.LineSegments
   belowPathLine: THREE.LineSegments
   goldenPathLine: THREE.LineSegments
   bluePathLine: THREE.LineSegments
@@ -128,7 +129,7 @@ export default function SunPathChart({
     const scene = new THREE.Scene()
 
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 600)
-    camera.position.set(24, 15, 24)
+    camera.position.set(28, 18, 28)
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -271,6 +272,12 @@ export default function SunPathChart({
     )
     scene.add(abovePathLine)
 
+    const abovePathHaloLine = new THREE.LineSegments(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0xe37c4a, transparent: true, opacity: 0.34 })
+    )
+    scene.add(abovePathHaloLine)
+
     const belowPathLine = new THREE.LineSegments(
       new THREE.BufferGeometry(),
       new THREE.LineBasicMaterial({ color: 0x919caf, transparent: true, opacity: 0.5 })
@@ -323,6 +330,7 @@ export default function SunPathChart({
       sunGlow,
       sunLight,
       abovePathLine,
+      abovePathHaloLine,
       belowPathLine,
       goldenPathLine,
       bluePathLine,
@@ -350,6 +358,8 @@ export default function SunPathChart({
     if (path.length === 0) {
       live.abovePathLine.geometry.dispose()
       live.abovePathLine.geometry = new THREE.BufferGeometry()
+      live.abovePathHaloLine.geometry.dispose()
+      live.abovePathHaloLine.geometry = new THREE.BufferGeometry()
       live.belowPathLine.geometry.dispose()
       live.belowPathLine.geometry = new THREE.BufferGeometry()
       live.goldenPathLine.geometry.dispose()
@@ -361,6 +371,9 @@ export default function SunPathChart({
 
     live.abovePathLine.geometry.dispose()
     live.abovePathLine.geometry = buildSegmentGeometry(path, (altitude) => altitude >= 0)
+
+    live.abovePathHaloLine.geometry.dispose()
+    live.abovePathHaloLine.geometry = buildSegmentGeometry(path, (altitude) => altitude >= 0, SKY_RADIUS + 0.045)
 
     live.belowPathLine.geometry.dispose()
     live.belowPathLine.geometry = buildSegmentGeometry(path, (altitude) => altitude < 0)
