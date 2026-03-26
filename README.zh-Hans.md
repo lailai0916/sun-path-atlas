@@ -3,10 +3,6 @@
   <p><a href="README.md">English</a> | 简体中文</p>
 </div>
 
-> [!Warning]
->
-> 本项目除 README 外，均由 GPT-5.3-Codex Extra High 独立完成。
-
 ## 快速开始
 
 ```bash

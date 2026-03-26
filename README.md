@@ -3,10 +3,6 @@
   <p>English | <a href="README.zh-Hans.md">简体中文</a></p>
 </div>
 
-> [!Warning]
->
-> Except for the README, this project was independently completed by GPT-5.3-Codex Extra High.
-
 ## Getting Started
 
 ```bash
