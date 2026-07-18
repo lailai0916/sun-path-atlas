@@ -2,6 +2,8 @@
   "name": "sun-path-atlas",
   "private": true,
   "version": "0.0.0",
+  "description": "Verifiable browser-based sun-path diagrams for planning and design",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
