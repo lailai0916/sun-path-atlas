@@ -10,11 +10,13 @@
   </p>
 </div>
 
+## Website Introduction
+
 A browser-based sun-path calculator for architecture and outdoor planning. Choose a
 location, date, time, and timezone to inspect solar geometry in 2D or 3D, compare a full
 year, and export the result.
 
-## Features
+## Website Features
 
 ☀️ **Solar geometry** — altitude, azimuth, sunrise, sunset, solar noon, day length, and
 twilight bands use readable NOAA-style simplified formulas.
@@ -31,7 +33,7 @@ tracks across the year.
 
 🌐 **Bilingual interface** — English is the default and Simplified Chinese is complete.
 
-## Quick start
+## Getting Started
 
 ```bash
 git clone https://github.com/lailai0916/sun-path-atlas.git
@@ -47,7 +49,7 @@ npm run lint
 npm run build
 ```
 
-## Calculation scope
+## Calculation Scope
 
 The model calculates equation of time, solar declination, hour angle, altitude, and
 azimuth. Sunrise and sunset use a Sun-center altitude of $-0.833°$; civil, nautical, and
@@ -58,19 +60,26 @@ seconds. Refraction is included only in the sunrise and sunset definition, terra
 local horizon obstructions are not modelled, and polar-circle boundaries are more
 sensitive. See [About Sun Calculations](docs/about.md) for formulas and limitations.
 
-## Structure
+## Project Structure
 
-```text
-src/
-├── components/                      # controls, charts, map, and statistics
-├── modules/                         # solar math, export, and i18n
-├── App.tsx                          # application composition
-└── index.css                        # themes and responsive layout
-docs/about.md                        # formulas, definitions, and limits
-public/                              # static assets
-vite.config.ts                       # Vite configuration
+```bash
+sun-path-atlas/
+├── src/
+│   ├── components/                 # controls, charts, map, and statistics
+│   ├── modules/                    # solar math, export, and i18n
+│   ├── App.tsx                     # application composition
+│   ├── index.css                   # themes and responsive layout
+│   └── main.tsx                    # React entry point
+├── docs/about.md                   # formulas, definitions, and limits
+├── public/                         # static assets
+├── index.html                      # Application entry page
+├── package-lock.json               # Dependency lock file
+├── package.json                    # Dependency configuration
+├── tsconfig.json                   # TypeScript configuration
+├── vite.config.ts                  # Vite configuration
+└── LICENSE                         # Code license
 ```
 
 ## License
 
-Licensed under the [MIT License](LICENSE).
+This project's code is licensed under [MIT License](LICENSE).

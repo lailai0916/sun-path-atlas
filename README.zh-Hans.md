@@ -10,10 +10,12 @@
   </p>
 </div>
 
+## 网站简介
+
 面向建筑与户外规划的浏览器太阳路径计算器。选择地点、日期、时间与时区后，可在 2D 或
 3D 视图中检查太阳几何，对比全年路径，并导出结果。
 
-## 特性
+## 网站特性
 
 ☀️ **太阳几何** —— 使用可读的 NOAA 风格简化公式，计算高度角、方位角、日出、日落、
 太阳正午、日长与曙暮光带。
@@ -53,19 +55,26 @@ $-0.833°$；民用、航海与天文曙暮光分别使用 $-6°$、$-12°$ 与 
 也不包含地形与局部地平线遮挡；极圈边界附近更敏感。公式与限制见
 [太阳计算说明](docs/about.md)。
 
-## 结构
+## 项目结构
 
-```text
-src/
-├── components/                      # 控件、图表、地图与统计
-├── modules/                         # 太阳计算、导出与 i18n
-├── App.tsx                          # 应用组合
-└── index.css                        # 主题与响应式布局
-docs/about.md                        # 公式、定义与限制
-public/                              # 静态资源
-vite.config.ts                       # Vite 配置
+```bash
+sun-path-atlas/
+├── src/
+│   ├── components/                 # 控件、图表、地图与统计
+│   ├── modules/                    # 太阳计算、导出与 i18n
+│   ├── App.tsx                     # 应用组合
+│   ├── index.css                   # 主题与响应式布局
+│   └── main.tsx                    # React 入口
+├── docs/about.md                   # 公式、定义与限制
+├── public/                         # 静态资源
+├── index.html                      # 应用入口页面
+├── package-lock.json               # 依赖锁定文件
+├── package.json                    # 依赖配置
+├── tsconfig.json                   # TypeScript 配置
+├── vite.config.ts                  # Vite 配置
+└── LICENSE                         # 代码许可协议
 ```
 
-## 许可
+## 许可协议
 
-采用 [MIT License](LICENSE)。
+本项目代码采用 [MIT 许可协议](LICENSE)。
