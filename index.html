@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="A browser-based sun-path calculator for architecture and outdoor planning." />
     <script>
       ;(() => {
-        const stored = localStorage.getItem('sunpath-theme')
-        const theme = stored === 'light' || stored === 'dark' ? stored : 'system'
-        document.documentElement.dataset.theme = theme
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
       })()
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

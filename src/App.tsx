@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import ControlsPanel from './components/ControlsPanel'
 import SunPathChart, { type SunPoint } from './components/SunPathChart'
 import YearOverviewChart, { type YearCurve } from './components/YearOverviewChart'
@@ -12,7 +12,7 @@ import { formatDuration, formatTimeWithOffset, getUtcDateFromLocal } from './mod
 import { exportSunPath } from './modules/export'
 import { createTranslator, I18nContext, useI18n, type Language } from './modules/i18n'
 
-type ThemeMode = 'system' | 'light' | 'dark'
+type Theme = 'light' | 'dark'
 
 type DateParts = {
   year: number
@@ -23,8 +23,10 @@ type DateParts = {
 const SAMPLE_STEP_MINUTES = 5
 const YEAR_CURVE_STEP_MINUTES = 10
 const YEAR_REFERENCE_DAY = 21
-const THEME_STORAGE_KEY = 'sunpath-theme'
 const LANGUAGE_STORAGE_KEY = 'sunpath-lang'
+
+const getSystemTheme = (): Theme =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
 const MONTH_COLORS = [
   '#3b82f6',
@@ -71,29 +73,47 @@ export default function App() {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
     return stored === 'zh' ? 'zh' : 'en'
   })
-  const [theme, setTheme] = useState<ThemeMode>(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY)
-    if (stored === 'light' || stored === 'dark' || stored === 'system') return stored
-    return 'system'
-  })
+  const [theme, setTheme] = useState<Theme>(getSystemTheme)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const syncWithSystem = () => setTheme(getSystemTheme())
+    const syncWhenVisible = () => {
+      if (document.visibilityState === 'visible') syncWithSystem()
+    }
+
+    syncWithSystem()
+    media.addEventListener('change', syncWithSystem)
+    document.addEventListener('visibilitychange', syncWhenVisible)
+    return () => {
+      media.removeEventListener('change', syncWithSystem)
+      document.removeEventListener('visibilitychange', syncWhenVisible)
+    }
+  }, [])
 
   useEffect(() => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
-    document.title = createTranslator(language)('app.documentTitle')
+    const t = createTranslator(language)
+    document.title = t('app.title')
+    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
+    if (description) description.content = t('app.description')
   }, [language])
+
+  const toggleTheme = useCallback(() => {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   const translator = useMemo(() => createTranslator(language), [language])
   const i18nValue = useMemo(() => ({ lang: language, t: translator }), [language, translator])
 
   return (
     <I18nContext.Provider value={i18nValue}>
-      <AppContent language={language} setLanguage={setLanguage} theme={theme} setTheme={setTheme} />
+      <AppContent language={language} setLanguage={setLanguage} theme={theme} toggleTheme={toggleTheme} />
     </I18nContext.Provider>
   )
 }
@@ -101,11 +121,11 @@ export default function App() {
 type AppContentProps = {
   language: Language
   setLanguage: (lang: Language) => void
-  theme: ThemeMode
-  setTheme: (mode: ThemeMode) => void
+  theme: Theme
+  toggleTheme: () => void
 }
 
-function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps) {
+function AppContent({ language, setLanguage, theme, toggleTheme }: AppContentProps) {
   const { t } = useI18n()
   const [latitude, setLatitude] = useState('30')
   const [longitude, setLongitude] = useState('120')
@@ -406,61 +426,37 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
     <div className="app">
       <header className="topbar">
         <div>
-          <p className="eyebrow">{t('app.eyebrow')}</p>
           <h1>{t('app.title')}</h1>
-          <p className="subtitle">{t('app.subtitle')}</p>
+          <p className="subtitle">{t('app.description')}</p>
         </div>
         <div className="topbar-controls">
-          <div className="control-group">
-            <span className="control-label">{t('app.language')}</span>
-            <div className="segment">
-              <button
-                type="button"
-                className={language === 'en' ? 'segment-button active' : 'segment-button'}
-                onClick={() => setLanguage('en')}
-                aria-pressed={language === 'en'}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={language === 'zh' ? 'segment-button active' : 'segment-button'}
-                onClick={() => setLanguage('zh')}
-                aria-pressed={language === 'zh'}
-              >
-                {t('lang.zh')}
-              </button>
-            </div>
-          </div>
-          <div className="control-group">
-            <span className="control-label">{t('app.theme')}</span>
-            <div className="segment">
-              <button
-                type="button"
-                className={theme === 'system' ? 'segment-button active' : 'segment-button'}
-                onClick={() => setTheme('system')}
-                aria-pressed={theme === 'system'}
-              >
-                {t('theme.system')}
-              </button>
-              <button
-                type="button"
-                className={theme === 'light' ? 'segment-button active' : 'segment-button'}
-                onClick={() => setTheme('light')}
-                aria-pressed={theme === 'light'}
-              >
-                {t('theme.light')}
-              </button>
-              <button
-                type="button"
-                className={theme === 'dark' ? 'segment-button active' : 'segment-button'}
-                onClick={() => setTheme('dark')}
-                aria-pressed={theme === 'dark'}
-              >
-                {t('theme.dark')}
-              </button>
-            </div>
-          </div>
+          <button
+            type="button"
+            className="icon-button language-button"
+            onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+            aria-label={t('app.switchLanguage')}
+            title={t('app.switchLanguage')}
+          >
+            {language === 'zh' ? '中' : 'EN'}
+          </button>
+          <button
+            type="button"
+            className="icon-button"
+            onClick={toggleTheme}
+            aria-label={t('app.toggleTheme')}
+            title={t('app.toggleTheme')}
+          >
+            {theme === 'dark' ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+              </svg>
+            )}
+          </button>
         </div>
       </header>
 
