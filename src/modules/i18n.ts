@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react'
 
 export const translations = {
   en: {
+    'app.documentTitle': 'Sun Path Atlas',
     'app.eyebrow': 'Sun Path Atlas',
     'app.title': 'Professional Sun Path Diagram',
     'app.subtitle': 'A clean, verifiable sun-path toolkit for architecture and outdoor planning.',
@@ -91,6 +92,7 @@ export const translations = {
       'Solar position and sunrise/sunset use NOAA-style simplified formulas (no refraction). Twilight bands use standard sun-altitude thresholds (-6°, -12°, -18°). Golden/blue hour follow configurable altitude ranges.',
   },
   zh: {
+    'app.documentTitle': '太阳路径图谱',
     'app.eyebrow': 'Sun Path Atlas',
     'app.title': '专业级太阳路径图谱',
     'app.subtitle': '面向建筑、摄影与户外规划的简洁可信工具。',

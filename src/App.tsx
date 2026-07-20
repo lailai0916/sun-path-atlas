@@ -84,6 +84,8 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
+    document.title = createTranslator(language)('app.documentTitle')
   }, [language])
 
   const translator = useMemo(() => createTranslator(language), [language])
@@ -416,6 +418,7 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
                 type="button"
                 className={language === 'en' ? 'segment-button active' : 'segment-button'}
                 onClick={() => setLanguage('en')}
+                aria-pressed={language === 'en'}
               >
                 {t('lang.en')}
               </button>
@@ -423,6 +426,7 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
                 type="button"
                 className={language === 'zh' ? 'segment-button active' : 'segment-button'}
                 onClick={() => setLanguage('zh')}
+                aria-pressed={language === 'zh'}
               >
                 {t('lang.zh')}
               </button>
@@ -435,6 +439,7 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
                 type="button"
                 className={theme === 'system' ? 'segment-button active' : 'segment-button'}
                 onClick={() => setTheme('system')}
+                aria-pressed={theme === 'system'}
               >
                 {t('theme.system')}
               </button>
@@ -442,6 +447,7 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
                 type="button"
                 className={theme === 'light' ? 'segment-button active' : 'segment-button'}
                 onClick={() => setTheme('light')}
+                aria-pressed={theme === 'light'}
               >
                 {t('theme.light')}
               </button>
@@ -449,6 +455,7 @@ function AppContent({ language, setLanguage, theme, setTheme }: AppContentProps)
                 type="button"
                 className={theme === 'dark' ? 'segment-button active' : 'segment-button'}
                 onClick={() => setTheme('dark')}
+                aria-pressed={theme === 'dark'}
               >
                 {t('theme.dark')}
               </button>

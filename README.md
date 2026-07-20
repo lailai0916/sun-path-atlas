@@ -33,6 +33,8 @@ tracks across the year.
 
 🌐 **Bilingual interface** — English is the default and Simplified Chinese is complete.
 
+🎨 **Adaptive themes** — follow the system by default, with explicit light and dark modes.
+
 ## Getting Started
 
 ```bash

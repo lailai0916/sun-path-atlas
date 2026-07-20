@@ -27,6 +27,7 @@
 }
 
 :root[data-theme='dark'] {
+  color-scheme: dark;
   --bg: #0f1117;
   --bg-2: #1a1f2b;
   --bg-3: #0b0f15;
@@ -49,8 +50,14 @@
   --map-grid: rgba(255, 255, 255, 0.08);
 }
 
+:root[data-theme='light'],
+:root[data-theme='system'] {
+  color-scheme: light;
+}
+
 @media (prefers-color-scheme: dark) {
   :root[data-theme='system'] {
+    color-scheme: dark;
     --bg: #0f1117;
     --bg-2: #1a1f2b;
     --bg-3: #0b0f15;
