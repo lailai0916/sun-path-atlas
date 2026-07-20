@@ -80,6 +80,7 @@ export default function ControlsPanel({
             type="button"
             className={mode === 'day' ? 'mode-option active' : 'mode-option'}
             onClick={() => onModeChange('day')}
+            aria-pressed={mode === 'day'}
           >
             {t('app.mode.day')}
           </button>
@@ -87,6 +88,7 @@ export default function ControlsPanel({
             type="button"
             className={mode === 'year' ? 'mode-option active' : 'mode-option'}
             onClick={() => onModeChange('year')}
+            aria-pressed={mode === 'year'}
           >
             {t('app.mode.year')}
           </button>

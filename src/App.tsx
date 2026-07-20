@@ -77,6 +77,8 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
+    const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+    if (themeColor) themeColor.content = theme === 'dark' ? '#0d1117' : '#f6f7f9'
   }, [theme])
 
   useEffect(() => {
@@ -425,7 +427,7 @@ function AppContent({ language, setLanguage, theme, toggleTheme }: AppContentPro
   return (
     <div className="app">
       <header className="topbar">
-        <div>
+        <div className="topbar-copy">
           <h1>{t('app.title')}</h1>
           <p className="subtitle">{t('app.description')}</p>
         </div>
@@ -434,6 +436,7 @@ function AppContent({ language, setLanguage, theme, toggleTheme }: AppContentPro
             type="button"
             className="icon-button language-button"
             onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+            aria-pressed={language === 'zh'}
             aria-label={t('app.switchLanguage')}
             title={t('app.switchLanguage')}
           >
@@ -443,6 +446,7 @@ function AppContent({ language, setLanguage, theme, toggleTheme }: AppContentPro
             type="button"
             className="icon-button"
             onClick={toggleTheme}
+            aria-pressed={theme === 'dark'}
             aria-label={t('app.toggleTheme')}
             title={t('app.toggleTheme')}
           >

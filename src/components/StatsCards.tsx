@@ -10,14 +10,14 @@ type StatsCardsProps = {
 
 export default function StatsCards({ items }: StatsCardsProps) {
   return (
-    <div className="stats-grid">
+    <dl className="stats-grid">
       {items.map((item) => (
         <div key={item.label} className="stat-card">
-          <p className="stat-label">{item.label}</p>
-          <p className="stat-value">{item.value}</p>
+          <dt className="stat-label">{item.label}</dt>
+          <dd className="stat-value">{item.value}</dd>
           {item.note ? <p className="stat-note">{item.note}</p> : null}
         </div>
       ))}
-    </div>
+    </dl>
   )
 }
